@@ -1,4 +1,4 @@
-#!/usr/bin/python3.5
+#!/usr/bin/python3
 #
 # Copyright (c) 2017 Carl Treudler
 # For licensing see LICENSE in repository. (MIT license)
@@ -21,20 +21,22 @@
 
 import usb1
 def main():
+    found = False
     with usb1.USBContext() as context:
         for device in context.getDeviceIterator(skip_on_error=True):
             if (device.getVendorID(), device.getProductID()) == (0x0483,0x3748) or \
             (device.getVendorID(), device.getProductID()) == (0x0483,0x374b):
+                found = True
                 print('%s (%04x:%04x)' % (device.getProduct(), device.getVendorID(), device.getProductID()) )
                 oos=""
-                try:
-                    sn=device.getSerialNumber()
-                    for x in sn:
-                        oos +="\\x%02x"%ord(x)
-                    print("hls_serial \""+sn+"\"")  # this was the easy before, but we print it anyways
-                    print("hls_serial \""+oos+"\"") # everything escaped and ready for OpenOCD's tcl scripts
-                except:
+                sn=device._getStringDescriptor(device.device_descriptor.iSerialNumber, 0x0409)
+                for x in sn:
                     pass
+                    oos +="\\x%02x"%ord(x)
+                print("hls_serial \""+sn+"\"")  # this was the easy before, but we print it anyways
+                print("hls_serial \""+oos+"\"") # everything escaped and ready for OpenOCD's tcl scripts
+    if found == False:
+        print("not units found.")
 
 if __name__ == '__main__':
     main()
