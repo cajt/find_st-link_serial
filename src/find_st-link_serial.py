@@ -33,8 +33,8 @@ def main():
                 for x in sn:
                     pass
                     oos +="\\x%02x"%ord(x)
-                print("hls_serial \""+sn+"\"")  # this was the easy before, but we print it anyways
-                print("hls_serial \""+oos+"\"") # everything escaped and ready for OpenOCD's tcl scripts
+                print("hla_serial \""+sn+"\"")  # this was the easy before, but we print it anyways
+                print("hla_serial \""+oos+"\"") # everything escaped and ready for OpenOCD's tcl scripts
     if found == False:
         print("not units found.")
 
